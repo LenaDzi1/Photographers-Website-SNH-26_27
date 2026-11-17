@@ -1,0 +1,42 @@
+CREATE DATABASE IF NOT EXISTS photographers CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE photographers;
+
+CREATE TABLE users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(32) NOT NULL UNIQUE,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    premium BOOLEAN NOT NULL DEFAULT FALSE,
+    premium_requested BOOLEAN NOT NULL DEFAULT FALSE,
+    admin BOOLEAN NOT NULL DEFAULT FALSE,
+    session_version INT UNSIGNED NOT NULL DEFAULT 0,
+    reset_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin UNIQUE,
+    reset_expires DATETIME
+) ENGINE=InnoDB;
+
+CREATE TABLE photos (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    premium BOOLEAN NOT NULL,
+    mime VARCHAR(20) NOT NULL,
+    image MEDIUMBLOB NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE audit_log (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    logged_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ip VARCHAR(45) NOT NULL,
+    user_id INT UNSIGNED,
+    event VARCHAR(40) NOT NULL,
+    detail VARCHAR(64) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE auth_limits (
+    subject VARCHAR(50) NOT NULL,
+    action VARCHAR(20) NOT NULL,
+    time_window BIGINT UNSIGNED NOT NULL,
+    attempts INT UNSIGNED NOT NULL,
+    PRIMARY KEY (subject, action)
+) ENGINE=InnoDB;
