@@ -1,4 +1,4 @@
-# Photographers
+# Photographers Website SNH 26/27
 
 Photographers is a PHP and MySQL photo gallery with Standard and Premium accounts. Members can upload photos, browse the gallery, and download photos their account can access. Administrators manage accounts and Premium requests.
 
